@@ -1,0 +1,6 @@
+@model JuanApp.ViewModels.Account.AccountLoginVM
+@{ ViewData["Title"] = "Sign in"; }
+<section class="account-page"><div class="account-card"><span class="eyebrow">Welcome back</span><h1>Good to<br/><em>see you.</em></h1>
+@if(TempData["AccountNotice"] is string note){<div class="notice">@note</div>}@if(TempData["AccountError"] is string error){<div class="validation-summary">@error</div>}
+<form asp-action="Login" method="post"><div asp-validation-summary="ModelOnly" class="validation-summary"></div><input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl"/><label>Email or username<input asp-for="UsernameOrEmail" autocomplete="username"/></label><span asp-validation-for="UsernameOrEmail"></span><label>Password<input asp-for="Password" autocomplete="current-password"/></label><span asp-validation-for="Password"></span><label class="remember-line"><input asp-for="RememberMe"/> Keep me signed in</label><button class="button button--wide" type="submit">Sign in</button></form>
+<form asp-action="ExternalLogin" method="post"><button class="button button--outline button--wide" type="submit" name="provider" value="Google">Continue with Google</button></form><div class="account-links"><a asp-action="ForgotPassword">Forgot password?</a><span>New to Juan? <a asp-action="Register">Create an account</a></span></div></div></section>

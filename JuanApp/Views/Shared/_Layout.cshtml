@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>@ViewData["Title"] · Juan</title>
+    <meta name="description" content="Juan footwear for everyday movement. Thoughtful design, easy comfort, and a little joy in every step."/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body>
+    <div class="topline">Free shipping on orders over $100 <span>·</span> Made for everyday movement</div>
+    <header class="site-header"><a class="brand" asp-controller="Home" asp-action="Index">juan<span>.</span></a>
+        <nav class="main-nav"><a asp-controller="Shop" asp-action="Index">Shop</a><a asp-controller="Home" asp-action="Index" asp-fragment="story">Our story</a></nav>
+        <div class="header-actions">@if(User.IsInRole("Admin")){<a class="account-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>}<a asp-controller="Basket" asp-action="Index" class="bag-link">Bag <span>↗</span></a>
+            @if(User.Identity?.IsAuthenticated == true){<span class="header-user">Hi, @User.Identity.Name</span><form asp-controller="Account" asp-action="Logout" method="post" class="inline-form"><button class="text-button" type="submit">Sign out</button></form>}
+            else {<a class="account-link" asp-controller="Account" asp-action="Login">Sign in</a>}
+        </div>
+    </header>
+    @if (TempData["SubscribeNotice"] is string notice) { <div class="flash-message">@notice</div> }
+    @if (TempData["SubscribeError"] is string subError) { <div class="flash-message flash-message--error">@subError</div> }
+    <main>@RenderBody()</main>
+    <footer class="site-footer"><div class="footer-main"><a class="brand brand--footer" asp-controller="Home" asp-action="Index">juan<span>.</span></a><p>Good shoes for the everyday extraordinary.</p><a class="footer-shop" asp-controller="Shop" asp-action="Index">Find your pair ↗</a></div><div class="footer-bottom"><span>© @DateTime.Now.Year Juan Shoes</span><span>Made for wherever life takes you.</span><a asp-controller="Home" asp-action="Privacy">Privacy</a></div></footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script><script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script><script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

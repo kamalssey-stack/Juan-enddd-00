@@ -1,0 +1,2 @@
+@{ ViewData["Title"] = "Order confirmed"; }
+<section class="order-complete"><div class="order-complete__mark">✓</div><span class="eyebrow">Thank you for choosing Juan</span><h1>Order <em>placed.</em></h1><p>Your order <strong>@TempData["OrderNumber"]</strong> is in. We’ll take it from here.</p><div class="order-complete__total">Order total <strong>$@TempData["OrderTotal"]</strong></div><a class="button" asp-controller="Shop" asp-action="Index">Back to the collection</a></section>

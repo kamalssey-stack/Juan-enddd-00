@@ -1,0 +1,15 @@
+@model JuanApp.ViewModels.Shop.ShopVM
+@{ ViewData["Title"] = "Shop Juan"; }
+<section class="page-hero"><span class="eyebrow">The Juan collection</span><h1>Find your<br/><em>everyday pair.</em></h1><p>Easy comfort and considered design, made to move with you.</p></section>
+<section class="section-wrap shop-wrap">
+    <form class="shop-filters" method="get">
+        <label class="search-box"><span>Search</span><input type="search" name="search" value="@Model.Search" placeholder="Try sneakers, leather..."/></label>
+        <label><span>Category</span><select name="categoryId"><option value="">All footwear</option>@foreach(var category in Model.Categories){<option value="@category.Id" selected="@(Model.SelectedCategoryId==category.Id)">@category.Name</option>}</select></label>
+        <label><span>Sort by</span><select name="sortBy"><option value="newest">Newest</option><option value="price_low" selected="@(Model.SortBy=="price_low")">Price: low to high</option><option value="price_high" selected="@(Model.SortBy=="price_high")">Price: high to low</option><option value="name_asc" selected="@(Model.SortBy=="name_asc")">Name</option></select></label>
+        <button class="button button--small" type="submit">Apply filters</button>
+    </form>
+    <div class="shop-resultline"><span>@Model.Products.TotalCount pairs to explore</span><span>Page @Model.Products.CurrentPage of @Math.Max(Model.Products.TotalPages,1)</span></div>
+    @if(Model.Products.Items.Any()) { <div class="product-grid">@foreach(var product in Model.Products.Items){<partial name="_ProductCardPartial" model="product"/>}</div> }
+    else { <div class="empty-state"><h2>No pairs found</h2><p>Try a different search or browse the full collection.</p><a class="button" asp-action="Index">Clear filters</a></div> }
+    @if(Model.Products.TotalPages>1){<nav class="pagination-row" aria-label="Product pages">@if(Model.Products.HasPrevious){<a asp-route-page="@(Model.Products.CurrentPage-1)" asp-route-search="@Model.Search" asp-route-categoryId="@Model.SelectedCategoryId" asp-route-sortBy="@Model.SortBy">← Previous</a>}<span>@Model.Products.CurrentPage</span>@if(Model.Products.HasNext){<a asp-route-page="@(Model.Products.CurrentPage+1)" asp-route-search="@Model.Search" asp-route-categoryId="@Model.SelectedCategoryId" asp-route-sortBy="@Model.SortBy">Next →</a>}</nav>}
+</section>

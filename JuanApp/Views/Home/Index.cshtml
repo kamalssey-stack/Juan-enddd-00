@@ -1,0 +1,71 @@
+@model JuanApp.ViewModels.Home.HomeVM
+@{ ViewData["Title"] = "Juan Shoes | Made for every step"; }
+@if (Model.Sliders.Any())
+{
+<section class="hero hero-slider" aria-label="Juan featured collections" data-hero-slider>
+    <div class="hero-track">
+        @for (var i = 0; i < Model.Sliders.Count; i++)
+        {
+            var slide = Model.Sliders[i];
+            var image = slide.ImageUrl.Contains('/') ? slide.ImageUrl : $"assets/img/slider/{slide.ImageUrl}";
+            <article class="hero-slide @(i == 0 ? "is-active" : "")" data-hero-slide aria-hidden="@(i != 0)">
+                <div class="hero__copy">
+                    <span class="eyebrow">@slide.Subtitle</span>
+                    <h1>@slide.Title</h1>
+                    @if (!string.IsNullOrWhiteSpace(slide.Description)) { <p>@slide.Description</p> }
+                    <a class="button" asp-controller="Shop" asp-action="Index">@(slide.ButtonText ?? "Shop the collection") <span>↗</span></a>
+                </div>
+                <div class="hero__visual">
+                    <img src="~/@image" alt="@slide.Title" />
+                    <div class="hero__note"><span>@(i + 1).ToString("00") / @Model.Sliders.Count.ToString("00")</span><b>Juan<br/>new season</b></div>
+                </div>
+            </article>
+        }
+    </div>
+    @if (Model.Sliders.Count > 1)
+    {
+        <div class="hero-controls" aria-label="Slider controls">
+            <button type="button" class="hero-arrow" data-hero-prev aria-label="Previous slide">←</button>
+            @for (var i = 0; i < Model.Sliders.Count; i++) { <button type="button" class="hero-dot @(i == 0 ? "is-active" : "")" data-hero-dot="@i" aria-label="Go to slide @(i + 1)"></button> }
+            <button type="button" class="hero-arrow" data-hero-next aria-label="Next slide">→</button>
+        </div>
+    }
+    <div class="hero__side">JUAN · EVERYDAY, ELEVATED</div>
+</section>
+}
+else
+{
+<section class="hero">
+    <div class="hero__copy"><span class="eyebrow">Step into something better</span><h1>Move through<br/>your own rhythm.</h1><p>Thoughtful design, all-day comfort, and a little more joy in every step.</p><a class="button" asp-controller="Shop" asp-action="Index">Shop the collection <span>↗</span></a></div>
+    <div class="hero__visual"><img src="~/assets/img/slider/slider-1.jpg" alt="Juan new season footwear collection" /></div>
+</section>
+}
+<section class="trust-strip"><span>Designed for daily movement</span><span>Comfort in every detail</span><span>Made to go further</span></section>
+@if (Model.NewProducts.Any()) {
+<section class="section-wrap"><div class="section-heading"><div><span class="eyebrow">Just landed</span><h2>Fresh from Juan</h2></div><a class="text-link" asp-controller="Shop" asp-action="Index">See all products ↗</a></div><div class="product-grid">@foreach(var product in Model.NewProducts.Take(4)){<partial name="_ProductCardPartial" model="product"/>}</div></section>}
+<section class="story-band" id="story"><div class="story-band__image"><img src="~/assets/img/banner/banner-1.jpg" alt="Juan everyday collection"/></div><div><span class="eyebrow">Find your fit</span><h2>Good shoes.<br/><em>Better days.</em></h2><p>Meet the pairs made to follow wherever the day takes you.</p><a class="button button--light" asp-controller="Shop" asp-action="Index">Explore Juan</a></div></section>
+@if (Model.FeaturedProducts.Any()) {
+<section class="section-wrap"><div class="section-heading"><div><span class="eyebrow">Hand picked for you</span><h2>Juan favorites</h2></div><a class="text-link" asp-controller="Shop" asp-action="Index">Shop all ↗</a></div><div class="product-grid">@foreach(var product in Model.FeaturedProducts.Take(4)){<partial name="_ProductCardPartial" model="product"/>}</div></section>}
+<section class="newsletter"><span class="eyebrow">A good thing in your inbox</span><h2>New drops, no noise.</h2><p>Be first to know when something new arrives.</p><form asp-controller="Subscribe" asp-action="Index" method="post"><input type="email" name="email" placeholder="Your email address" required/><button type="submit">Subscribe ↗</button></form></section>
+@section Scripts {
+<script>
+(() => {
+    const root = document.querySelector('[data-hero-slider]');
+    if (!root) return;
+    const slides = [...root.querySelectorAll('[data-hero-slide]')];
+    const dots = [...root.querySelectorAll('[data-hero-dot]')];
+    let current = 0;
+    let timer;
+    const show = (index) => {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, i) => { slide.classList.toggle('is-active', i === current); slide.setAttribute('aria-hidden', i !== current); });
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === current));
+    };
+    const restart = () => { window.clearInterval(timer); timer = window.setInterval(() => show(current + 1), 5500); };
+    root.querySelector('[data-hero-prev]')?.addEventListener('click', () => { show(current - 1); restart(); });
+    root.querySelector('[data-hero-next]')?.addEventListener('click', () => { show(current + 1); restart(); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); restart(); }));
+    restart();
+})();
+</script>
+}

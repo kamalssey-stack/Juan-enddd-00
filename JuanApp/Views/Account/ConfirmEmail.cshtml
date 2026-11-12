@@ -1,0 +1,2 @@
+@{ ViewData["Title"] = "Email confirmation"; }
+<section class="account-page"><div class="account-card"><span class="eyebrow">Juan account</span>@if(ViewBag.Confirmed==true){<h1>You’re all<br/><em>set.</em></h1><p>Your email is confirmed. Sign in and find your next pair.</p><a class="button" asp-action="Login">Sign in</a>}else{<h1>Link <em>expired.</em></h1><p>We couldn't confirm this email link. Request a new account confirmation email.</p><a class="button" asp-action="Register">Try again</a>}</div></section>

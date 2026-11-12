@@ -1,0 +1,13 @@
+@model JuanApp.ViewModels.Basket.BasketVM
+@{ ViewData["Title"] = "Your bag"; }
+<section class="page-hero page-hero--compact"><span class="eyebrow">Your Juan picks</span><h1>Your <em>bag.</em></h1></section>
+<section class="section-wrap basket-wrap">
+@if(TempData["Notice"] is string notice){<div class="notice">@notice</div>}
+@if(!Model.Items.Any()){<div class="empty-state"><div class="empty-state__icon">✳</div><h2>Your bag is taking a breather.</h2><p>Find a pair that feels like you.</p><a class="button" asp-controller="Shop" asp-action="Index">Explore the collection</a></div>}
+else{
+    <div class="basket-list">
+    @foreach(var item in Model.Items){<article class="basket-item"><img src="~/assets/img/product/@item.ImageUrl" alt="@item.ProductName"/><div class="basket-item__info"><span class="eyebrow">Juan footwear</span><h2>@item.ProductName</h2><strong>$@item.Price.ToString("0.00")</strong></div><form asp-action="ChangeCount" method="post" class="basket-qty"><input type="hidden" name="productId" value="@item.ProductId"/><label>Qty <input type="number" name="count" value="@item.Count" min="1" max="50"/></label><button class="text-button" type="submit">Update</button></form><strong class="basket-subtotal">$@item.SubTotal.ToString("0.00")</strong><form asp-action="Remove" method="post"><input type="hidden" name="productId" value="@item.ProductId"/><button class="remove-button" type="submit" aria-label="Remove @item.ProductName">×</button></form></article>}
+    </div>
+    <aside class="basket-summary"><div><span>Subtotal</span><strong>$@Model.TotalAmount.ToString("0.00")</strong></div><p>Shipping and taxes are calculated at checkout.</p><a class="button button--wide" asp-controller="Checkout" asp-action="Index">Continue to checkout ↗</a><a class="text-link" asp-controller="Shop" asp-action="Index">← Keep exploring</a></aside>
+}
+</section>
