@@ -15,13 +15,17 @@ public class FileService : IFileService
 
     public async Task<string> UploadAsync(IFormFile file, string folder)
     {
+        var validation = await ImageUploadValidator.ValidateAsync(file);
+        if (!validation.IsValid || validation.Extension is null)
+            throw new InvalidDataException(validation.Error ?? "The uploaded image is empty.");
+
         string uploadDir = Path.Combine(_env.WebRootPath, folder);
         if (!Directory.Exists(uploadDir))
         {
             Directory.CreateDirectory(uploadDir);
         }
 
-        string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+        string uniqueFileName = Guid.NewGuid().ToString("N") + validation.Extension;
         string filePath = Path.Combine(uploadDir, uniqueFileName);
 
         using (var fileStream = new FileStream(filePath, FileMode.Create))

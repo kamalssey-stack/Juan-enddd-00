@@ -1,0 +1,8 @@
+@model JuanApp.ViewModels.Account.TwoFactorSetupVM
+@{ ViewData["Title"] = "Account security"; }
+<section class="account-page"><div class="account-card"><span class="eyebrow">Your account</span><h1>Account<br/><em>security.</em></h1>
+@if(TempData["AccountNotice"] is string note){<div class="notice">@note</div>}
+@if(TempData["AccountError"] is string error){<div class="validation-summary">@error</div>}
+@if(Model.IsEnabled){<div class="notice">Two-factor authentication is enabled for this account.</div>}
+else{<p>1. Add Juan to an authenticator app using this setup key.</p><label>Setup key<input readonly value="@Model.SharedKey" onclick="this.select()"/></label><p class="small">If your authenticator accepts an setup URI, use this:</p><textarea readonly rows="3" class="form-control" onclick="this.select()">@Model.AuthenticatorUri</textarea><p>2. Enter the six-digit code from the app to finish setup.</p><form asp-action="EnableTwoFactor" method="post"><label>Authenticator code<input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="10" required/></label><button class="button button--wide" type="submit">Enable two-factor authentication</button></form>}
+<p class="account-foot"><a asp-controller="Home" asp-action="Index">← Back to Juan</a></p></div></section>

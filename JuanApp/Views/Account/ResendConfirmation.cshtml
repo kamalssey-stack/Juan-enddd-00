@@ -1,0 +1,3 @@
+@model JuanApp.ViewModels.Account.ForgotPasswordVM
+@{ ViewData["Title"] = "Resend confirmation"; }
+<section class="account-page"><div class="account-card"><span class="eyebrow">One more step</span><h1>Confirm your<br/><em>email.</em></h1><p>Enter the email you used to register and we’ll send a fresh confirmation link if the account is still unconfirmed.</p><form asp-action="ResendConfirmation" method="post"><label>Email<input asp-for="Email" autocomplete="email"/></label><span asp-validation-for="Email"></span><button class="button button--wide" type="submit">Send confirmation link</button></form><p class="account-foot"><a asp-action="Login">← Back to sign in</a></p></div></section>

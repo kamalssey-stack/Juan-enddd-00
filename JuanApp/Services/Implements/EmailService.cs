@@ -18,7 +18,7 @@ public class EmailService : IEmailService
         _logger = logger;
     }
 
-    public async Task SendEmailAsync(string to, string subject, string body, bool isHtml = true)
+    public async Task<bool> SendEmailAsync(string to, string subject, string body, bool isHtml = true)
     {
         try
         {
@@ -31,8 +31,8 @@ public class EmailService : IEmailService
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                _logger.LogWarning($"[EMAIL SIMULATION] To: {to} | Subject: {subject}");
-                return;
+                _logger.LogWarning("Email was not sent to {Recipient}; configure Email:Username and Email:Password in User Secrets.", to);
+                return false;
             }
 
             using var smtpClient = new SmtpClient(host, port)
@@ -52,10 +52,12 @@ public class EmailService : IEmailService
 
             await smtpClient.SendMailAsync(mailMessage);
             _logger.LogInformation($"Email sent successfully to {to}");
+            return true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Failed to send email to {to}: {ex.Message}");
+            return false;
         }
     }
 

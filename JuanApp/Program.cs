@@ -13,10 +13,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<JuanDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedEmail = true;
+    // Email confirmation is checked in AccountController for members; Admin can sign in by password.
+    options.SignIn.RequireConfirmedEmail = false;
     options.User.RequireUniqueEmail = true;
     options.Password.RequiredLength = 8;
     options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
 })
@@ -60,6 +64,7 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedAsync(context, services.GetRequiredService<UserManager<AppUser>>(), services.GetRequiredService<RoleManager<IdentityRole>>(), services.GetRequiredService<IConfiguration>());
 }
 app.Run();
+
 
 
 

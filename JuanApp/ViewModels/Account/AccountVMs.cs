@@ -74,3 +74,13 @@ public class MyAccountVM
 
     public List<JuanApp.Models.Order> Orders { get; set; } = new List<JuanApp.Models.Order>();
 }
+
+public class TwoFactorSetupVM
+{
+    public bool IsEnabled { get; set; }
+    public string SharedKey { get; set; } = string.Empty;
+    public string AuthenticatorUri { get; set; } = string.Empty;
+    [System.ComponentModel.DataAnnotations.Required]
+    [System.ComponentModel.DataAnnotations.StringLength(10, MinimumLength = 6)]
+    public string Code { get; set; } = string.Empty;
+}

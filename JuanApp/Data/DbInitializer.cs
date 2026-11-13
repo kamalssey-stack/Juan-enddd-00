@@ -31,11 +31,39 @@ public static class DbInitializer
             {
                 adminUser = new AppUser { UserName = adminEmail, Email = adminEmail, FullName = "System Admin", EmailConfirmed = true };
                 var created = await userManager.CreateAsync(adminUser, adminPassword);
-                if (created.Succeeded) await userManager.AddToRoleAsync(adminUser, "Admin");
+                if (!created.Succeeded)
+                    throw new InvalidOperationException("Could not create the configured admin: " + string.Join(" ", created.Errors.Select(error => error.Description)));
+                var assigned = await userManager.AddToRoleAsync(adminUser, "Admin");
+                if (!assigned.Succeeded)
+                    throw new InvalidOperationException("Could not assign the Admin role: " + string.Join(" ", assigned.Errors.Select(error => error.Description)));
             }
-            else if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+            else
             {
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                if (!adminUser.EmailConfirmed)
+                {
+                    adminUser.EmailConfirmed = true;
+                    var updated = await userManager.UpdateAsync(adminUser);
+                    if (!updated.Succeeded)
+                        throw new InvalidOperationException("Could not confirm the configured admin email.");
+                }
+
+                if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+                {
+                    var assigned = await userManager.AddToRoleAsync(adminUser, "Admin");
+                    if (!assigned.Succeeded)
+                        throw new InvalidOperationException("Could not assign the Admin role: " + string.Join(" ", assigned.Errors.Select(error => error.Description)));
+                }
+
+                if (!await userManager.CheckPasswordAsync(adminUser, adminPassword))
+                {
+                    var resetToken = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+                    var reset = await userManager.ResetPasswordAsync(adminUser, resetToken, adminPassword);
+                    if (!reset.Succeeded)
+                        throw new InvalidOperationException("Could not apply SeedAdmin:Password: " + string.Join(" ", reset.Errors.Select(error => error.Description)));
+                }
+
+                await userManager.ResetAccessFailedCountAsync(adminUser);
+                await userManager.SetLockoutEndDateAsync(adminUser, null);
             }
         }
         // 4. Categories Seed (Seed Entity 1)

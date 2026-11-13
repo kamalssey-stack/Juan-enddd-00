@@ -39,7 +39,7 @@ public class ProductCreateVM
     [Required, Range(0, 10000)]
     public int StockCount { get; set; } = 10;
 
-    [Required(ErrorMessage = "Please select category")]
+    [Range(1, int.MaxValue, ErrorMessage = "Please select a category")]
     public int CategoryId { get; set; }
 
     public bool IsFeatured { get; set; }
