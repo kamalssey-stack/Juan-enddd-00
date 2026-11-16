@@ -23,16 +23,27 @@ public class AccountController(UserManager<AppUser> users, SignInManager<AppUser
             && string.Equals(user.Email, configuredAdminEmail, StringComparison.OrdinalIgnoreCase);
         if (isConfiguredAdmin && !await users.IsInRoleAsync(user, "Admin"))
             await users.AddToRoleAsync(user, "Admin");
-        var isAdmin = isConfiguredAdmin || await users.IsInRoleAsync(user, "Admin");
-        if (!await users.IsEmailConfirmedAsync(user) && !isAdmin)
+        if (!await users.IsEmailConfirmedAsync(user))
         {
-            ModelState.AddModelError(string.Empty, "Confirm your email before signing in.");
+            if (!await users.CheckPasswordAsync(user, model.Password))
+            {
+                ModelState.AddModelError(string.Empty, "The email or password is incorrect.");
+                return View(model);
+            }
+
+            var token = await users.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(VerifyEmail), "Account", new { email = user.Email, token }, Request.Scheme)!;
+            var body = await ReadEmailTemplateAsync("emailConfirm.html", link, user.UserName ?? user.Email!);
+            var emailSent = await email.SendEmailAsync(user.Email!, "Confirm Email", body);
+            ModelState.AddModelError(string.Empty, emailSent
+                ? "Your email is not confirmed. A new confirmation link has been sent."
+                : "Your email is not confirmed, but the confirmation email could not be sent. Check Gmail SMTP settings.");
             return View(model);
         }
         var result = await signIn.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
         if (result.Succeeded) return LocalRedirect(Url.IsLocalUrl(returnUrl) ? returnUrl! : Url.Action("Index", "Home")!);
         if (result.RequiresTwoFactor) return RedirectToAction(nameof(TwoFactor), new { model.RememberMe, returnUrl });
-        ModelState.AddModelError(string.Empty, result.IsNotAllowed ? "Confirm your email before signing in." : "The email or password is incorrect.");
+        ModelState.AddModelError(string.Empty, "The email or password is incorrect.");
         return View(model);
     }
     [HttpGet] public IActionResult Register() => View(new AccountRegisterVM());
@@ -49,7 +60,7 @@ public class AccountController(UserManager<AppUser> users, SignInManager<AppUser
         var emailSent = await email.SendEmailAsync(user.Email!, "Confirm Email", body);
         TempData["AccountNotice"] = emailSent
             ? "Your account is ready. Check your email to confirm it before signing in."
-            : "Your account was created, but the confirmation email was not sent. Add Email:Username and Email:Password in User Secrets, then resend the confirmation email.";
+            : "Your account was created, but the confirmation email was not sent. Configure Email:Username (Gmail address) and Email:Password (Google app password) in User Secrets, then resend the confirmation email.";
         return RedirectToAction(nameof(Login));
     }
     [HttpGet] public IActionResult ResendConfirmation() => View(new ForgotPasswordVM());
@@ -80,8 +91,8 @@ public class AccountController(UserManager<AppUser> users, SignInManager<AppUser
     [HttpPost, ValidateAntiForgeryToken] public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
     {
         if (!ModelState.IsValid) return View(model);
-        var user = await users.FindByEmailAsync(model.Email);
-        if (user is not null && await users.IsEmailConfirmedAsync(user))
+        var user = await users.FindByEmailAsync(model.Email.Trim());
+        if (user is not null)
         {
             var token = await users.GeneratePasswordResetTokenAsync(user);
             var link = Url.Action(nameof(ResetPassword), "Account", new { userId = user.Id, token }, Request.Scheme)!;

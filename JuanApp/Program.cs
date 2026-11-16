@@ -13,8 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<JuanDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    // Email confirmation is checked in AccountController for members; Admin can sign in by password.
-    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedEmail = true;
     options.User.RequireUniqueEmail = true;
     options.Password.RequiredLength = 8;
     options.Password.RequireDigit = true;

@@ -10,7 +10,6 @@ public static class DbInitializer
     {
         await context.Database.MigrateAsync();
 
-        // 1. Roles Seed
         string[] roles = new[] { "Admin", "Member" };
         foreach (var role in roles)
         {
@@ -20,8 +19,7 @@ public static class DbInitializer
             }
         }
 
-        // Create the initial administrator only when explicit credentials are configured.
-        // Set SeedAdmin__Email and SeedAdmin__Password through user secrets or environment variables.
+      
         var adminEmail = configuration["SeedAdmin:Email"];
         var adminPassword = configuration["SeedAdmin:Password"];
         if (!string.IsNullOrWhiteSpace(adminEmail) && !string.IsNullOrWhiteSpace(adminPassword))
@@ -66,7 +64,6 @@ public static class DbInitializer
                 await userManager.SetLockoutEndDateAsync(adminUser, null);
             }
         }
-        // 4. Categories Seed (Seed Entity 1)
         if (!await context.Categories.IgnoreQueryFilters().AnyAsync())
         {
             var categories = new List<Category>
@@ -82,7 +79,7 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
-        // 5. Sliders Seed
+     
         if (!await context.Sliders.IgnoreQueryFilters().AnyAsync())
         {
             var sliders = new List<Slider>
@@ -113,7 +110,7 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
-        // 6. Products Seed (Seed Entity 2)
+
         if (!await context.Products.IgnoreQueryFilters().AnyAsync())
         {
             var menCategory = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Men Shoes");
@@ -274,7 +271,6 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
-        // 7. Subscribers Seed
         if (!await context.Subscribers.IgnoreQueryFilters().AnyAsync())
         {
             var subscribers = new List<Subscriber>

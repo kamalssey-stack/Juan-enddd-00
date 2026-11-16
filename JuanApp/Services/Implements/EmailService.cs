@@ -25,13 +25,16 @@ public class EmailService : IEmailService
             var host = _config["Email:Host"] ?? "smtp.gmail.com";
             var portStr = _config["Email:Port"] ?? "587";
             int.TryParse(portStr, out int port);
-            var username = _config["Email:Username"];
-            var password = _config["Email:Password"];
-            var fromEmail = _config["Email:From"] ?? username ?? "noreply@juan.com";
+            var username = _config["Email:Username"]?.Trim();
+            var rawPassword = _config["Email:Password"];
+            var password = rawPassword is null
+                ? null
+                : string.Concat(rawPassword.Where(character => !char.IsWhiteSpace(character)));
+            var fromEmail = (_config["Email:From"] ?? username)?.Trim();
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fromEmail))
             {
-                _logger.LogWarning("Email was not sent to {Recipient}; configure Email:Username and Email:Password in User Secrets.", to);
+                _logger.LogWarning("Email was not sent to {Recipient}; configure Email:Username (Gmail address) and Email:Password (Google app password) in User Secrets.", to);
                 return false;
             }
 

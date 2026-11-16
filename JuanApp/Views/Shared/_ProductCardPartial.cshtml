@@ -6,12 +6,13 @@
     <a class="product-card__image" asp-controller="Shop" asp-action="Detail" asp-route-id="@Model.Id">
         <img src="~/assets/img/product/@image" alt="@Model.Name" />
         @if (Model.IsNew) { <span class="product-badge">New</span> }
+        @if (Model.DiscountPercent is > 0) { <span class="product-badge product-badge--sale">-@Model.DiscountPercent%</span> }
         <span class="product-card__quick">View details</span>
     </a>
     <div class="product-card__body">
         <span class="eyebrow">@(Model.Category?.Name ?? "Juan collection")</span>
         <h3><a asp-controller="Shop" asp-action="Detail" asp-route-id="@Model.Id">@Model.Name</a></h3>
-        <div class="product-card__bottom"><strong>$@Model.DiscountPrice.ToString("0.00")</strong><span>★ @((Model.Ratings.Any()) ? Model.Ratings.Average(r => r.Rating).ToString("0.0") : "5.0")</span></div>
+        <div class="product-card__bottom"><div class="product-card__prices"><strong>$@Model.DiscountPrice.ToString("0.00")</strong>@if (Model.DiscountPercent is > 0) { <del>$@Model.Price.ToString("0.00")</del> }</div><span>★ @((Model.Ratings.Any()) ? Model.Ratings.Average(r => r.Rating).ToString("0.0") : "5.0")</span></div>
         <form asp-controller="Basket" asp-action="Add" method="post"><input type="hidden" name="productId" value="@Model.Id"/><button class="button button--small" type="submit">Add to bag</button></form>
     </div>
 </article>
