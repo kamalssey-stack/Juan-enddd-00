@@ -17,7 +17,7 @@
                 </div>
                 <div class="hero__visual">
                     <img src="~/@image" alt="@slide.Title" />
-                    <div class="hero__note"><span>@(i + 1).ToString("00") / @Model.Sliders.Count.ToString("00")</span><b>Juan<br/>new season</b></div>
+                    <div class="hero__note"><span>@((i + 1).ToString("00")) / @(Model.Sliders.Count.ToString("00"))</span><b>Juan<br/>new season</b></div>
                 </div>
             </article>
         }
@@ -42,11 +42,19 @@ else
 }
 <section class="trust-strip"><span>Designed for daily movement</span><span>Comfort in every detail</span><span>Made to go further</span></section>
 @if (Model.NewProducts.Any()) {
-<section class="section-wrap"><div class="section-heading"><div><span class="eyebrow">Just landed</span><h2>Fresh from Juan</h2></div><a class="text-link" asp-controller="Shop" asp-action="Index">See all products ↗</a></div><div class="product-grid">@foreach(var product in Model.NewProducts.Take(4)){<partial name="_ProductCardPartial" model="product"/>}</div></section>}
+<section class="section-wrap" id="new-arrivals"><div class="section-heading"><div><span class="eyebrow">Just landed</span><h2>Fresh from Juan</h2></div><a class="text-link" asp-controller="Shop" asp-action="Index">See all products ↗</a></div><div class="product-grid">@foreach(var product in Model.NewProducts.Take(4)){<partial name="_ProductCardPartial" model="product"/>}</div></section>}
 <section class="story-band" id="story"><div class="story-band__image"><img src="~/assets/img/banner/banner-1.jpg" alt="Juan everyday collection"/></div><div><span class="eyebrow">Find your fit</span><h2>Good shoes.<br/><em>Better days.</em></h2><p>Meet the pairs made to follow wherever the day takes you.</p><a class="button button--light" asp-controller="Shop" asp-action="Index">Explore Juan</a></div></section>
 @if (Model.FeaturedProducts.Any()) {
-<section class="section-wrap"><div class="section-heading"><div><span class="eyebrow">Hand picked for you</span><h2>Juan favorites</h2></div><a class="text-link" asp-controller="Shop" asp-action="Index">Shop all ↗</a></div><div class="product-grid">@foreach(var product in Model.FeaturedProducts.Take(4)){<partial name="_ProductCardPartial" model="product"/>}</div></section>}
-<section class="newsletter"><span class="eyebrow">A good thing in your inbox</span><h2>New drops, no noise.</h2><p>Be first to know when something new arrives.</p><form asp-controller="Subscribe" asp-action="Index" method="post"><input type="email" name="email" placeholder="Your email address" required/><button type="submit">Subscribe ↗</button></form></section>
+<section class="section-wrap" id="favorites"><div class="section-heading"><div><span class="eyebrow">Hand picked for you</span><h2>Juan favorites</h2></div><a class="text-link" asp-controller="Shop" asp-action="Index">Shop all ↗</a></div><div class="product-grid">@foreach(var product in Model.FeaturedProducts.Take(4)){<partial name="_ProductCardPartial" model="product"/>}</div></section>}
+<section class="newsletter" id="subscribe"><span class="eyebrow">A good thing in your inbox</span><h2>New drops, no noise.</h2><p>Be first to know when something new arrives.</p><form asp-controller="Subscribe" asp-action="Index" method="post"><input type="email" name="email" placeholder="Your email address" required/><button type="submit">Subscribe ↗</button></form></section>
+<section class="section-wrap journal-section" id="blog">
+    <div class="section-heading"><div><span class="eyebrow">From the Juan journal</span><h2>Stories for the road.</h2></div></div>
+    <div class="journal-grid">
+        <article class="journal-card"><img src="~/assets/img/blog/blog-1.jpg" alt="Choosing everyday shoes"/><span class="eyebrow">Everyday style · 5 min read</span><h3>Finding your everyday pair</h3><p>A few simple things to look for when choosing shoes for long, busy days.</p></article>
+        <article class="journal-card"><img src="~/assets/img/blog/blog-2.jpg" alt="Taking care of leather shoes"/><span class="eyebrow">Care guide · 4 min read</span><h3>Keep leather looking its best</h3><p>Small care habits can help your favorite leather shoes last longer.</p></article>
+        <article class="journal-card"><img src="~/assets/img/blog/blog-3.jpg" alt="Comfortable shoes for travel"/><span class="eyebrow">On the move · 6 min read</span><h3>Comfort for every journey</h3><p>How to choose a comfortable pair for days spent exploring on foot.</p></article>
+    </div>
+</section>
 @section Scripts {
 <script>
 (() => {

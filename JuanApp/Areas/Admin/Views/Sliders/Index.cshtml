@@ -1,0 +1,10 @@
+@model List<JuanApp.Models.Slider>
+@{ ViewData["Title"] = "Sliders"; }
+<div class="d-flex align-items-center justify-content-between mb-4"><div><h1 class="h3 mb-1 text-gray-800">Homepage sliders</h1><p class="mb-0">Manage the slides shown at the top of the store.</p></div><a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Add slider</a></div>
+<div class="card shadow mb-4"><div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Slides</h6></div><div class="card-body"><div class="table-responsive"><table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"><thead><tr><th>Order</th><th>Image</th><th>Title</th><th>Button</th><th>Actions</th></tr></thead><tbody>
+@foreach (var slider in Model)
+{
+    var imagePath = slider.ImageUrl.Contains('/') ? slider.ImageUrl : $"assets/img/slider/{slider.ImageUrl}";
+    <tr><td>@slider.OrderNumber</td><td><img src="~/@imagePath" alt="@slider.Title" style="width:130px;height:70px;object-fit:cover" /></td><td>@slider.Title</td><td>@slider.ButtonText</td><td><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@slider.Id">Edit</a> <form asp-action="Delete" asp-route-id="@slider.Id" method="post" class="d-inline" onsubmit="return confirm('Remove this slide from the homepage?')"><button class="btn btn-sm btn-outline-danger" type="submit">Remove</button></form></td></tr>
+}
+</tbody></table></div></div></div>

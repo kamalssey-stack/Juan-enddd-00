@@ -182,6 +182,28 @@ public class AccountController(UserManager<AppUser> users, SignInManager<AppUser
     public IActionResult AccessDenied() { Response.StatusCode = 403; return View(); }
     [HttpGet] public async Task<IActionResult> MyOrders() { var user = await users.GetUserAsync(User); return user is null ? Challenge() : Json(await orders.getUserOrdersAsync(user.Id)); }
 
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> MyAccount()
+    {
+        var user = await users.GetUserAsync(User);
+        if (user is null) return Challenge();
+
+        var model = new MyAccountVM
+        {
+            FullName = user.FullName,
+            Email = user.Email ?? string.Empty,
+            Username = user.UserName ?? string.Empty,
+            Address = user.Address,
+            City = user.City,
+            PostalCode = user.PostalCode,
+            TwoFactorEnabled = user.TwoFactorEnabled,
+            Orders = await orders.getUserOrdersAsync(user.Id)
+        };
+
+        return View(model);
+    }
+
     private async Task<string> ReadEmailTemplateAsync(string templateName, string url, string username)
     {
         var templatePath = Path.Combine(environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot"), "templates", templateName);

@@ -1,0 +1,66 @@
+@model JuanApp.ViewModels.Account.MyAccountVM
+@{
+    ViewData["Title"] = "My Account";
+}
+
+<section class="account-page">
+    <div class="account-card" style="width:min(100%, 900px)">
+        <span class="eyebrow">Juan customer area</span>
+        <h1>My <em>account.</em></h1>
+
+        @if (TempData["AccountNotice"] is string notice)
+        {
+            <div class="notice">@notice</div>
+        }
+
+        <h2>Personal details</h2>
+        <div class="account-details-grid">
+            <p><strong>Full name</strong><br />@Model.FullName</p>
+            <p><strong>Username</strong><br />@Model.Username</p>
+            <p><strong>Email</strong><br />@Model.Email</p>
+            <p><strong>Address</strong><br />@(string.IsNullOrWhiteSpace(Model.Address) ? "Not added" : Model.Address)</p>
+            <p><strong>City</strong><br />@(string.IsNullOrWhiteSpace(Model.City) ? "Not added" : Model.City)</p>
+            <p><strong>Postal code</strong><br />@(string.IsNullOrWhiteSpace(Model.PostalCode) ? "Not added" : Model.PostalCode)</p>
+        </div>
+
+        <h2>My orders</h2>
+        @if (Model.Orders.Count == 0)
+        {
+            <p>You have not placed any orders yet.</p>
+            <a class="button" asp-controller="Shop" asp-action="Index">Browse the shop</a>
+        }
+        else
+        {
+            <div class="account-orders">
+                @foreach (var order in Model.Orders)
+                {
+                    <article class="account-order">
+                        <div>
+                            <strong>@order.OrderNumber</strong>
+                            <span>@order.CreatedAt.ToLocalTime().ToString("d")</span>
+                        </div>
+                        <div>
+                            <span>@order.OrderItems.Sum(item => item.Count) item(s)</span>
+                            <span>@order.Status</span>
+                        </div>
+                        <strong>$@order.TotalAmount.ToString("0.00")</strong>
+                    </article>
+                }
+            </div>
+        }
+
+        <p class="account-foot"><a asp-controller="Home" asp-action="Index">← Back to Juan</a></p>
+    </div>
+</section>
+
+<style>
+    .account-card h2 { margin: 28px 0 14px; font-size: 20px; }
+    .account-details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 24px; }
+    .account-details-grid p { margin: 8px 0; overflow-wrap: anywhere; }
+    .account-details-grid strong { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .account-orders { border-top: 1px solid var(--line); }
+    .account-order { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 12px; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--line); }
+    .account-order div { display: grid; }
+    .account-order span { color: var(--muted); font-size: 12px; }
+    @@media (max-width: 600px) { .account-details-grid { grid-template-columns: 1fr; } .account-order { grid-template-columns: 1fr auto; } .account-order div:nth-child(2) { grid-column: 1; } }
+</style>

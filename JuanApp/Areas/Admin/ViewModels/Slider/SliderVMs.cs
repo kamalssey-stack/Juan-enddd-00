@@ -14,6 +14,7 @@ public class SliderCreateVM
     public string? ButtonText { get; set; } = "Shop Now";
     public string? ButtonLink { get; set; } = "/Shop";
 
+    [Range(1, int.MaxValue)]
     public int OrderNumber { get; set; } = 1;
 
     [Required(ErrorMessage = "Please upload slider image")]
@@ -33,6 +34,7 @@ public class SliderUpdateVM
     public string? ButtonText { get; set; } = "Shop Now";
     public string? ButtonLink { get; set; } = "/Shop";
 
+    [Range(1, int.MaxValue)]
     public int OrderNumber { get; set; } = 1;
 
     public string? CurrentImageUrl { get; set; }

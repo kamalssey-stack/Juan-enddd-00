@@ -1,0 +1,14 @@
+@model JuanApp.Areas.Admin.ViewModels.SliderVM.SliderUpdateVM
+@{ ViewData["Title"] = "Edit slider"; var imagePath = Model.CurrentImageUrl?.Contains('/') == true ? Model.CurrentImageUrl : $"assets/img/slider/{Model.CurrentImageUrl}"; }
+<a asp-action="Index">← Sliders</a><h1 class="h3 my-3 text-gray-800">Edit homepage slider</h1>
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="card shadow p-4">
+    <input asp-for="Id" type="hidden"/><input asp-for="CurrentImageUrl" type="hidden"/>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <label class="form-group">Title<input asp-for="Title" class="form-control"/><span asp-validation-for="Title" class="text-danger"></span></label>
+    <label class="form-group">Subtitle<input asp-for="Subtitle" class="form-control"/></label>
+    <label class="form-group">Description<textarea asp-for="Description" class="form-control" rows="3"></textarea></label>
+    <div class="form-row"><label class="form-group col-md-4">Button text<input asp-for="ButtonText" class="form-control"/></label><label class="form-group col-md-4">Button link<input asp-for="ButtonLink" class="form-control"/></label><label class="form-group col-md-4">Display order<input asp-for="OrderNumber" type="number" min="1" class="form-control"/></label></div>
+    <div class="form-group"><p>Current image</p><img src="~/@imagePath" alt="@Model.Title" style="width:220px;height:120px;object-fit:cover"/></div>
+    <label class="form-group">Replace image (optional)<input asp-for="Image" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp" class="form-control-file"/><span asp-validation-for="Image" class="text-danger"></span></label>
+    <div><button class="btn btn-primary" type="submit">Save changes</button> <a class="btn btn-light" asp-action="Index">Cancel</a></div>
+</form>

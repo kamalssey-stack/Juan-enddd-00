@@ -1,0 +1,12 @@
+@model JuanApp.Areas.Admin.ViewModels.SliderVM.SliderCreateVM
+@{ ViewData["Title"] = "Add slider"; }
+<a asp-action="Index">← Sliders</a><h1 class="h3 my-3 text-gray-800">Add homepage slider</h1>
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="card shadow p-4">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <label class="form-group">Title<input asp-for="Title" class="form-control"/><span asp-validation-for="Title" class="text-danger"></span></label>
+    <label class="form-group">Subtitle<input asp-for="Subtitle" class="form-control"/></label>
+    <label class="form-group">Description<textarea asp-for="Description" class="form-control" rows="3"></textarea></label>
+    <div class="form-row"><label class="form-group col-md-4">Button text<input asp-for="ButtonText" class="form-control"/></label><label class="form-group col-md-4">Button link<input asp-for="ButtonLink" class="form-control"/></label><label class="form-group col-md-4">Display order<input asp-for="OrderNumber" type="number" min="1" class="form-control"/></label></div>
+    <label class="form-group">Slider image<input asp-for="Image" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp" class="form-control-file"/><span asp-validation-for="Image" class="text-danger"></span></label>
+    <div><button class="btn btn-primary" type="submit">Save slider</button> <a class="btn btn-light" asp-action="Index">Cancel</a></div>
+</form>
